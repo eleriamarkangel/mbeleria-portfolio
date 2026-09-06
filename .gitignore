@@ -1,0 +1,15 @@
+# Editor backups. These get rsynced into the docroot and served publicly -
+# config.php~ is delivered as plain text instead of executed. Real leak class.
+*~
+*.bak
+*.swp
+*.orig
+
+# OS cruft
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# The single-file build (images as data: URIs, ~292 KB).
+# Never commit it: git stores a full copy of the blob on every text edit.
+index-singlefile.html
