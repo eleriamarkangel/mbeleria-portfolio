@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mark Angel Eleria — Software Engineer</title>
-<meta name="description" content="Software Engineer with 4+ years in backend development — Java EE, Spring Boot, Oracle SQL — plus API design and Linux server administration. Cavite, Philippines.">
+<meta name="description" content="A software engineer's personal site — backend work, a banking API built to understand how money moves, and a Linux server I run myself. Based in Cavite, Philippines.">
 <meta name="author" content="Mark Angel Balabag Eleria">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Mark Angel Eleria — Software Engineer">
-<meta property="og:description" content="Backend engineering, production support, and self-managed Linux infrastructure.">
+<meta property="og:description" content="Backend work, a banking API built for fun, and a Linux server I manage myself.">
 <meta property="og:url" content="https://mbeleria.com/">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23101418'/><text y='.87em' x='.42em' font-size='62' font-family='Segoe UI,sans-serif' font-weight='700' fill='%23ffffff'>M</text></svg>">
 
@@ -258,27 +258,48 @@ section{padding-block:clamp(3.6rem,9vw,6.5rem);scroll-margin-top:5rem;position:r
 /* ═══════════════════════════════════════════════════════════
    5. HERO + PARALLAX
    ═══════════════════════════════════════════════════════════ */
-.hero{
+/* Scroll track: reserves extra scroll distance so the hero can stay
+   pinned in place and fade out before About slides up to replace it.
+   ADJUST THIS HEIGHT to speed up or slow down the handoff:
+     - 112vh (current) = about as short as this effect can be while
+       still reading as an actual fade rather than a hard cut —
+       roughly a tenth of a viewport height of scroll
+     - raise it (e.g. 130vh, 160vh) for a longer, more visible fade
+     - 100vh is the true floor: at that point pin distance is zero
+       and the effect disappears entirely (hero just scrolls away
+       like a normal section, no fade, no pin)
+   The pin/fade distance is always (this height − 100vh). The fade
+   itself is timed to finish exactly as the pin releases (see
+   FADE_RATE in the script below) so there's no gap where the hero
+   has vanished but About hasn't slid up yet.                        */
+.hero-track{
+  position:relative;
+  height:112vh;
+}
+.hero-sticky{
+  position:sticky;
+  top:0;
   min-height:clamp(38rem,92vh,54rem);
   display:flex;align-items:center;
   padding-top:7rem;padding-bottom:4rem;
-  position:relative;overflow:hidden;
+  overflow:hidden;
+  will-change:opacity,transform;
 }
 .hero-grid{
   display:grid;gap:clamp(2rem,5vw,4rem);align-items:center;
-  grid-template-columns:1.15fr .85fr;width:100%;
+  grid-template-columns:1.15fr .85fr;
 }
 @media (max-width:880px){
   .hero-grid{grid-template-columns:1fr;gap:2.5rem}
-  .hero{min-height:auto;padding-top:6rem}
+  .hero-sticky{min-height:auto;padding-top:6rem}
 }
 .hero-copy{will-change:transform}
-.hero h1{margin-bottom:.9rem}
-.hero .role{
+.hero-sticky h1{margin-bottom:.9rem}
+.hero-sticky .role{
   font-size:clamp(1.02rem,.95rem + .5vw,1.28rem);
   color:var(--ink-soft);font-weight:550;margin-bottom:1.3rem;
 }
-.hero .summary{color:var(--ink-soft);font-size:1.02rem;max-width:52ch}
+.hero-sticky .summary{color:var(--ink-soft);font-size:1.02rem;max-width:52ch}
 .loc{
   display:inline-flex;align-items:center;gap:.5rem;font-size:.82rem;
   color:var(--ink-faint);margin-bottom:1.1rem;font-weight:550;
@@ -342,10 +363,23 @@ section{padding-block:clamp(3.6rem,9vw,6.5rem);scroll-margin-top:5rem;position:r
   -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(140%);
   transition:background-color .45s ease,border-color .45s ease,transform .3s ease;
 }
-.cols-2{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr))}
 .cols-3{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(14.5rem,1fr))}
 
 .lede{font-size:1.06rem;color:var(--ink-soft);max-width:62ch;margin-bottom:2.4rem}
+
+/* about: intro text beside a photo, same pattern as the hero */
+.about-head{
+  display:grid;gap:clamp(2rem,5vw,3.5rem);align-items:center;
+  grid-template-columns:1.15fr .85fr;margin-bottom:2.4rem;
+}
+.about-photo{justify-self:center;width:100%;max-width:19rem}
+.about-photo .frame{
+  aspect-ratio:1/1;
+  background-image:url("img/mbe-about-Production-is-where-the-real-problems-live.jpg");
+}
+@media (max-width:880px){
+  .about-head{grid-template-columns:1fr;gap:2rem}
+}
 
 /* experience timeline */
 .tl{display:grid;gap:1rem;margin-top:1.4rem}
@@ -358,7 +392,11 @@ section{padding-block:clamp(3.6rem,9vw,6.5rem);scroll-margin-top:5rem;position:r
 }
 .tl-meta{font-size:.8rem;color:var(--ink-faint);font-weight:550;margin-bottom:.15rem}
 .tl h3{margin-bottom:.1rem}
-.tl-org{font-size:.94rem;color:var(--ink-soft);font-weight:600;margin-bottom:.6rem}
+.tl-org{
+  display:flex;align-items:center;gap:.55rem;
+  font-size:.94rem;color:var(--ink-soft);font-weight:600;margin-bottom:.6rem;
+}
+.tl-logo{width:1.9rem;height:1.9rem;border-radius:6px;object-fit:cover;flex:none;border:1px solid var(--line)}
 .tl ul{margin:0;padding-left:1.1rem;display:grid;gap:.45rem}
 .tl li{color:var(--ink-soft);font-size:.94rem}
 .tl li::marker{color:var(--ink-faint)}
@@ -374,8 +412,17 @@ section{padding-block:clamp(3.6rem,9vw,6.5rem);scroll-margin-top:5rem;position:r
   border:1px solid var(--line);color:var(--ink-soft);background:var(--surface-solid);
 }
 
-/* projects */
-.proj{display:grid;gap:.45rem}
+/* projects: one full-width row each, a photo beside the write-up */
+.proj-list{display:grid;gap:1.1rem}
+.proj{display:grid;grid-template-columns:14rem 1fr;gap:1.5rem;align-items:start}
+.proj-media{
+  border-radius:var(--frame-radius);overflow:hidden;border:1px solid var(--line);
+  aspect-ratio:1408/768;background-size:cover;background-position:center;
+}
+.proj-body{display:grid;gap:.45rem}
+@media (max-width:700px){
+  .proj{grid-template-columns:1fr}
+}
 .proj-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:.6rem;margin-bottom:.2rem}
 .badge{
   font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
@@ -434,6 +481,8 @@ footer{
   html{scroll-behavior:auto}
   *{transition-duration:.01ms!important;animation-duration:.01ms!important}
   .piece{opacity:1!important;transform:none!important}
+  .hero-track{height:auto!important}
+  .hero-sticky{position:relative!important;opacity:1!important;transform:none!important}
 }
 </style>
 </head>
@@ -464,15 +513,17 @@ footer{
 <main id="top">
 
 <!-- ══════════ HERO ══════════ -->
-<section class="hero">
+<section class="hero-track" id="hero">
+  <div class="hero-sticky" id="heroSticky">
   <div class="wrap hero-grid">
     <div class="hero-copy" id="heroCopy">
       <p class="loc"><span class="pulse"></span> Cavite, Philippines &middot; UTC+8 &middot; Open to remote</p>
       <h1>Mark Angel Eleria</h1>
       <p class="role">Software Engineer &mdash; backend systems, production support, and the Linux underneath them.</p>
       <p class="summary">
-        Four years building and supporting enterprise Java applications in production, recently
-        extended into API design and running my own hardened cloud infrastructure end to end.
+        Four years keeping backend systems running in production. Outside of work I like
+        taking things apart to see how they fit together — like the banking API and the
+        server this page is running on.
       </p>
       <div class="cta-row">
         <a class="btn btn-primary hx" href="#projects">
@@ -490,20 +541,29 @@ footer{
       <div class="frame"><span class="frame-tag" id="frameTag">Business</span></div>
     </div>
   </div>
+  </div>
 </section>
 
 <!-- ══════════ ABOUT ══════════ -->
 <section id="about">
   <div class="wrap">
-    <p class="eyebrow piece" style="--dy:22px">About</p>
-    <h2 class="piece" style="--dy:26px;--delay:60ms">Production is where the real problems live</h2>
-    <p class="lede piece" style="--dy:30px;--delay:120ms">
-      Software Engineer with 4+ years of experience in backend development using Java EE, Spring Boot,
-      CGI, and Oracle SQL, supporting enterprise applications in production. Skilled in troubleshooting,
-      root cause analysis, and permanent code fixes. Recently extended into API design and Linux server
-      administration &mdash; building a transactional banking REST API and provisioning a hardened
-      multi-user Oracle Cloud Infrastructure instance end to end.
-    </p>
+    <div class="about-head">
+      <div>
+        <p class="eyebrow piece" style="--dy:22px">About</p>
+        <h2 class="piece" style="--dy:26px;--delay:60ms">Production is where the real problems live</h2>
+        <p class="lede piece" style="--dy:30px;--delay:120ms">
+          I've spent the last four years supporting backend systems for enterprise applications &mdash;
+          the part of the job where something that used to work suddenly doesn't, and you have to find
+          out why. It teaches you to actually understand the systems you touch, not just patch around
+          them. Outside of work I build things for the same reason: a small banking API to see how
+          money really moves between accounts, and the Linux server hosting this very page, because
+          I wanted to know what it takes to keep something running on my own.
+        </p>
+      </div>
+      <div class="about-photo piece" style="--dx:26px;--delay:100ms">
+        <div class="frame"></div>
+      </div>
+    </div>
 
     <div class="tl">
       <article class="panel tl-item piece" style="--dx:-38px;--rot:-1.1deg;--delay:60ms">
@@ -511,11 +571,11 @@ footer{
         <div>
           <p class="tl-meta">May 2022 &mdash; Present &middot; Mandaluyong City</p>
           <h3>Full Stack Developer</h3>
-          <p class="tl-org">Accenture Inc.</p>
+          <p class="tl-org"><img class="tl-logo" src="img/mbe-about-accenture.jpg" alt="" aria-hidden="true"> Accenture Inc.</p>
           <ul>
-            <li>Developed and maintained Java EE and Spring Boot microservices and RESTful integrations supporting high-volume transaction systems for enterprise logistics and telecom applications.</li>
-            <li>Resolved 21% of total incident tickets in Q1 2023 as L2 production support, improving SLA compliance and reducing downtime.</li>
-            <li>Performed root cause analysis and implemented permanent code fixes and task automation that saved 62 hours per month, reducing recurring production issues and manual operational effort.</li>
+            <li>Build and maintain backend services that keep transactions moving for logistics and telecom clients &mdash; when one breaks, someone's shipment or bill doesn't go through.</li>
+            <li>In Q1 2023 I was closing about one in five of the team's support tickets, mostly by getting quicker at finding the actual cause instead of patching symptoms.</li>
+            <li>Automated the fixes I kept doing by hand, which ended up saving the team around 60 hours a month.</li>
           </ul>
         </div>
       </article>
@@ -525,11 +585,10 @@ footer{
         <div>
           <p class="tl-meta">Feb 2019 &mdash; Apr 2022 &middot; Makati City</p>
           <h3>Business Client Relations Associate</h3>
-          <p class="tl-org">Pawncare Services Inc. &mdash; Cebuana Lhuillier</p>
+          <p class="tl-org"><img class="tl-logo" src="img/mbe-about-cebuana.jpg" alt="" aria-hidden="true"> Pawncare Services Inc. &mdash; Cebuana Lhuillier</p>
           <ul>
-            <li>Managed high-volume financial transactions &mdash; remittance, pawning, bills payment, insurance &mdash; ensuring 100% regulatory compliance.</li>
-            <li>Designed an Excel-based interest projection tool that automated pawn calculations, reducing processing time and minimising errors.</li>
-            <li>Contributed to branch recognition as Top 10 Performer in Cavite Upper Region (Q1 2021) for gold sales, insurance, and pawning.</li>
+            <li>Handled day-to-day financial transactions at a branch &mdash; remittance, pawning, bills payment, insurance &mdash; under strict compliance rules.</li>
+            <li>Built a spreadsheet tool that calculated interest and pawn values automatically &mdash; probably my first real taste of using software to remove a repetitive, error-prone task.</li>
           </ul>
         </div>
       </article>
@@ -597,50 +656,40 @@ footer{
       look like when I own every layer, and what does it take to run a server properly on my own.
     </p>
 
-    <div class="cols-2">
+    <div class="proj-list">
       <article class="panel proj piece" style="--dx:-44px;--rot:-1.5deg;--delay:60ms">
-        <div class="proj-head">
-          <h3>Alkansya API</h3>
-          <span class="badge">Banking REST API</span>
+        <div class="proj-media" style="background-image:url('img/mbe-projects-alkansya.jpg')"></div>
+        <div class="proj-body">
+          <div class="proj-head">
+            <h3>Alkansya API</h3>
+            <span class="badge">Banking REST API</span>
+          </div>
+          <ul>
+            <li>Alkansya means "piggy bank" in Filipino. I built it to understand what actually happens behind a bank transfer &mdash; the rules and checks that have to hold before money is allowed to move.</li>
+            <li>A REST API for basic banking: opening accounts, depositing, withdrawing, transferring between them.</li>
+            <li>The interesting part was getting the money rules right &mdash; you can't withdraw more than you have, some accounts carry credit limits, and a transfer has to update both sides or neither.</li>
+            <li>Every failure returns a clear reason instead of a generic error, so using the API from the outside doesn't feel like guessing.</li>
+          </ul>
+          <ul class="stack"><li>Java 17</li><li>Spring Boot</li><li>Spring Data JPA</li><li>MySQL</li></ul>
         </div>
-        <ul>
-          <li>Designed a layered Spring Boot REST API &mdash; controller, service, repository &mdash; over MySQL, exposing endpoints for customer registration, bank account lifecycle, and transaction processing.</li>
-          <li>Implemented a centralised transactional flow for deposits, withdrawals, online transfers, and bills payments, applying account-type balance rules such as debit sufficiency and credit limit checks with atomic balance updates.</li>
-          <li>Enforced input validation and business rules through a dedicated rules layer, returning meaningful HTTP status responses for inactive accounts, insufficient funds, and rule conflicts.</li>
-        </ul>
-        <ul class="stack"><li>Java 17</li><li>Spring Boot</li><li>Spring Data JPA</li><li>MySQL</li></ul>
       </article>
 
       <article class="panel proj piece" style="--dx:44px;--rot:1.5deg;--delay:150ms">
-        <div class="proj-head">
-          <h3>Self-Managed Linux Server</h3>
-          <span class="badge">Serving this page</span>
+        <div class="proj-media" style="background-image:url('img/mbe-projects-Self-Managed-Linux-Server.jpg')"></div>
+        <div class="proj-body">
+          <div class="proj-head">
+            <h3>Self-Managed Linux Server</h3>
+            <span class="badge">Serving this page</span>
+          </div>
+          <ul>
+            <li>I wanted to know what actually happens between "buy a server" and "a website is live," so I did all of it myself instead of leaving it to a host that hides the details.</li>
+            <li>Set up and still maintain a small Linux server from scratch &mdash; the actual machine this page is running on right now.</li>
+            <li>Created separate levels of access for different users, locked the front door (no passwords, no direct root login), and keep backups in case I ever need to roll something back.</li>
+            <li>Configured the web server and firewall myself, and set up HTTPS so the connection is encrypted and the certificate renews on its own.</li>
+          </ul>
+          <ul class="stack"><li>Oracle Linux 9</li><li>aarch64</li><li>nginx</li><li>SELinux</li><li>firewalld</li><li>certbot</li></ul>
         </div>
-        <ul>
-          <li>Provisioned and administered an Oracle Linux compute instance on OCI, configuring VCN ingress rules, persistent hostname settings, and boot volume backups as rollback points.</li>
-          <li>Implemented least-privilege multi-user access using per-account ed25519 SSH keys with separate admin, developer, and viewer groups, disabled password and root login, and verified isolation through negative testing.</li>
-          <li>Deployed nginx as a public-facing web server, coordinating firewalld rules with OCI security lists, and terminating TLS with automatically renewing certificates.</li>
-        </ul>
-        <ul class="stack"><li>Oracle Linux 9</li><li>aarch64</li><li>nginx</li><li>SELinux</li><li>firewalld</li><li>certbot</li></ul>
       </article>
-    </div>
-
-    <div class="panel piece" style="--dy:40px;--delay:220ms;margin-top:1rem">
-      <div class="proj-head">
-        <h3>About this page</h3>
-        <span class="badge ghost">Colophon</span>
-      </div>
-      <p style="color:var(--ink-soft);font-size:.94rem;margin:0">
-        Static HTML on the server described above. No framework, no build step, no third-party
-        scripts, no analytics &mdash; nothing here phones anywhere.
-      </p>
-      <dl class="spec">
-        <div><dt>Host</dt><dd>Oracle Cloud, ap-singapore-2</dd></div>
-        <div><dt>OS</dt><dd>Oracle Linux 9, aarch64</dd></div>
-        <div><dt>Web server</dt><dd>nginx, SELinux enforcing</dd></div>
-        <div><dt>TLS</dt><dd>Let's Encrypt, auto-renewing</dd></div>
-        <div><dt>Document root</dt><dd><code>/srv/app/www</code>, ACL-scoped to nginx</dd></div>
-      </dl>
     </div>
 
     <div class="panel edu piece" style="--dy:44px;--delay:280ms;margin-top:1rem">
@@ -731,17 +780,52 @@ footer{
   /* ---- nav shadow once scrolled ---- */
   var nav = document.getElementById("nav");
 
-  /* ---- hero parallax ---- */
+  /* ---- hero: sticky pin + scroll-linked fade into About ------------
+     heroTrack reserves extra scroll height (see .hero-track in CSS,
+     currently 112vh). While the track is being scrolled through,
+     heroSticky stays pinned via CSS position:sticky, and here we
+     turn how far we've scrolled into that track into a 0-1 "progress"
+     value that drives its fade-out. Because it's read straight off
+     scroll position every frame (not a timed animation), it tracks
+     the scrollbar exactly and reverses cleanly if the user scrolls
+     back up. */
+  var heroTrack  = document.getElementById("hero");
+  var heroSticky = document.getElementById("heroSticky");
   var copy  = document.getElementById("heroCopy");
   var photo = document.getElementById("heroPhoto");
   var ticking = false;
 
+  // Keep this at 1: it makes the hero's opacity hit 0 at the exact
+  // same scroll position where the pin releases and About's top edge
+  // reaches the bottom of the viewport. Anything above 1 makes the
+  // hero disappear before the hand-off — which sounds snappier but
+  // actually opens a gap where neither section is visible. Anything
+  // below 1 leaves a visible sliver of hero after About starts
+  // sliding up. 1 is the value with no gap either way.
+  var FADE_RATE = 1;
+
   function onFrame(){
     var y = window.scrollY || window.pageYOffset;
     nav.classList.toggle("stuck", y > 8);
-    if (!reduced && y < window.innerHeight * 1.2){
-      if (copy)  copy.style.transform  = "translate3d(0," + (y * 0.16).toFixed(2) + "px,0)";
-      if (photo) photo.style.transform = "translate3d(0," + (y * -0.07).toFixed(2) + "px,0)";
+
+    if (heroTrack && heroSticky){
+      if (reduced){
+        heroSticky.style.opacity = "1";
+        heroSticky.style.transform = "none";
+        if (copy)  copy.style.transform  = "none";
+        if (photo) photo.style.transform = "none";
+      } else {
+        var pinDistance = heroTrack.offsetHeight - window.innerHeight;
+        var progress = pinDistance > 0
+          ? Math.min(Math.max(-heroTrack.getBoundingClientRect().top, 0) / pinDistance, 1)
+          : 0;
+        var fade = Math.min(progress * FADE_RATE, 1);
+
+        heroSticky.style.opacity   = String(1 - fade);
+        heroSticky.style.transform = "scale(" + (1 - fade * 0.06).toFixed(3) + ")";
+        if (copy)  copy.style.transform  = "translate3d(0," + (fade * -26).toFixed(2) + "px,0)";
+        if (photo) photo.style.transform = "translate3d(0," + (fade * 18).toFixed(2) + "px,0) scale(" + (1 - fade * 0.04).toFixed(3) + ")";
+      }
     }
     ticking = false;
   }
