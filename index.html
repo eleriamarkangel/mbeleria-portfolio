@@ -218,6 +218,20 @@ section{padding-block:clamp(3.6rem,9vw,6.5rem);scroll-margin-top:5rem;position:r
 }
 .brand{font-weight:700;letter-spacing:-.02em;font-size:1rem;text-decoration:none;padding:.3rem .1rem;border-radius:6px}
 .brand em{font-style:normal;color:var(--ink-faint);font-weight:500}
+.brand-short{display:none}
+
+/* hamburger toggle — hidden until the nav collapses on narrow screens */
+.menu-btn{
+  display:none;
+  width:2.25rem;height:2.25rem;border-radius:8px;cursor:pointer;padding:0;
+  border:1px solid var(--line);background:var(--surface-solid);color:var(--ink);
+  align-items:center;justify-content:center;
+}
+.menu-btn svg{width:19px;height:19px;flex:none}
+
+/* nav-drawer holds the links + theme switcher together, so both can
+   collapse into one dropdown under the hamburger on narrow screens */
+.nav-drawer{display:flex;align-items:center;gap:1.4rem}
 
 .links{display:flex;align-items:center;gap:.15rem;list-style:none;margin:0;padding:0}
 .links a{
@@ -244,46 +258,34 @@ section{padding-block:clamp(3.6rem,9vw,6.5rem);scroll-margin-top:5rem;position:r
 .tbtn[data-set="night"]    .swatch{background:linear-gradient(135deg,#241a4d 0%,#5b3fb0 55%,#0a0818 100%)}
 .tbtn[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--halo)}
 
+/* below this width the nav collapses to brand "M" + hamburger only;
+   links and the theme switcher move into a dropdown drawer */
 @media (max-width:760px){
-  .links a{padding:.45rem .5rem;font-size:.82rem}
-  .brand{font-size:.9rem}
-  .themes{padding-left:.4rem}
-  .tbtn{width:1.75rem;height:1.75rem}
-  .tbtn .swatch{width:.9rem;height:.9rem}
-}
-@media (max-width:460px){
-  .links a{padding:.4rem .34rem;font-size:.75rem}
+  .brand-full{display:none}
+  .brand-short{display:inline}
+  .menu-btn{display:inline-flex}
+  .nav-drawer{
+    display:none;
+    position:absolute;top:100%;left:0;right:0;
+    flex-direction:column;align-items:stretch;gap:.7rem;
+    padding:.7rem clamp(1.1rem,4vw,2.4rem) 1.1rem;
+    background:var(--surface-solid);border-bottom:1px solid var(--line);
+    box-shadow:var(--shadow);
+  }
+  .nav-drawer.open{display:flex}
+  .links{flex-direction:column;align-items:flex-start;gap:.15rem}
+  .links a{padding:.65rem .5rem}
+  .themes{padding-left:0;border-left:none;padding-top:.6rem;border-top:1px solid var(--line)}
 }
 
 /* ═══════════════════════════════════════════════════════════
-   5. HERO + PARALLAX
+   5. HERO
    ═══════════════════════════════════════════════════════════ */
-/* Scroll track: reserves extra scroll distance so the hero can stay
-   pinned in place and fade out before About slides up to replace it.
-   ADJUST THIS HEIGHT to speed up or slow down the handoff:
-     - 112vh (current) = about as short as this effect can be while
-       still reading as an actual fade rather than a hard cut —
-       roughly a tenth of a viewport height of scroll
-     - raise it (e.g. 130vh, 160vh) for a longer, more visible fade
-     - 100vh is the true floor: at that point pin distance is zero
-       and the effect disappears entirely (hero just scrolls away
-       like a normal section, no fade, no pin)
-   The pin/fade distance is always (this height − 100vh). The fade
-   itself is timed to finish exactly as the pin releases (see
-   FADE_RATE in the script below) so there's no gap where the hero
-   has vanished but About hasn't slid up yet.                        */
-.hero-track{
-  position:relative;
-  height:112vh;
-}
-.hero-sticky{
-  position:sticky;
-  top:0;
+.hero{
   min-height:clamp(38rem,92vh,54rem);
   display:flex;align-items:center;
   padding-top:7rem;padding-bottom:4rem;
-  overflow:hidden;
-  will-change:opacity,transform;
+  position:relative;overflow:hidden;
 }
 .hero-grid{
   display:grid;gap:clamp(2rem,5vw,4rem);align-items:center;
@@ -291,15 +293,14 @@ section{padding-block:clamp(3.6rem,9vw,6.5rem);scroll-margin-top:5rem;position:r
 }
 @media (max-width:880px){
   .hero-grid{grid-template-columns:1fr;gap:2.5rem}
-  .hero-sticky{min-height:auto;padding-top:6rem}
+  .hero{min-height:auto;padding-top:6rem}
 }
-.hero-copy{will-change:transform}
-.hero-sticky h1{margin-bottom:.9rem}
-.hero-sticky .role{
+.hero h1{margin-bottom:.9rem}
+.hero .role{
   font-size:clamp(1.02rem,.95rem + .5vw,1.28rem);
   color:var(--ink-soft);font-weight:550;margin-bottom:1.3rem;
 }
-.hero-sticky .summary{color:var(--ink-soft);font-size:1.02rem;max-width:52ch}
+.hero .summary{color:var(--ink-soft);font-size:1.02rem;max-width:52ch}
 .loc{
   display:inline-flex;align-items:center;gap:.5rem;font-size:.82rem;
   color:var(--ink-faint);margin-bottom:1.1rem;font-weight:550;
@@ -381,7 +382,9 @@ section{padding-block:clamp(3.6rem,9vw,6.5rem);scroll-margin-top:5rem;position:r
   .about-head{grid-template-columns:1fr;gap:2rem}
 }
 
-/* experience timeline */
+/* experience timeline: rail + a photo beside the write-up, same
+   media/body pattern as the project cards, just bigger than a
+   name-side icon since it's no longer squeezed into that text line */
 .tl{display:grid;gap:1rem;margin-top:1.4rem}
 .tl-item{display:grid;grid-template-columns:auto 1fr;gap:1.2rem}
 .tl-rail{width:2px;background:var(--line);border-radius:2px;position:relative;margin-left:.4rem}
@@ -390,13 +393,18 @@ section{padding-block:clamp(3.6rem,9vw,6.5rem);scroll-margin-top:5rem;position:r
   width:9px;height:9px;border-radius:50%;background:var(--accent);
   box-shadow:0 0 0 4px var(--halo);
 }
+.tl-content{display:grid;grid-template-columns:9rem 1fr;gap:1.2rem;align-items:start}
+.tl-media{
+  border-radius:var(--frame-radius);overflow:hidden;border:1px solid var(--line);
+  aspect-ratio:1/1;background-size:cover;background-position:center;
+}
+@media (max-width:700px){
+  .tl-content{grid-template-columns:1fr}
+  .tl-media{max-width:9rem}
+}
 .tl-meta{font-size:.8rem;color:var(--ink-faint);font-weight:550;margin-bottom:.15rem}
 .tl h3{margin-bottom:.1rem}
-.tl-org{
-  display:flex;align-items:center;gap:.55rem;
-  font-size:.94rem;color:var(--ink-soft);font-weight:600;margin-bottom:.6rem;
-}
-.tl-logo{width:1.9rem;height:1.9rem;border-radius:6px;object-fit:cover;flex:none;border:1px solid var(--line)}
+.tl-org{font-size:.94rem;color:var(--ink-soft);font-weight:600;margin-bottom:.6rem}
 .tl ul{margin:0;padding-left:1.1rem;display:grid;gap:.45rem}
 .tl li{color:var(--ink-soft);font-size:.94rem}
 .tl li::marker{color:var(--ink-faint)}
@@ -481,8 +489,6 @@ footer{
   html{scroll-behavior:auto}
   *{transition-duration:.01ms!important;animation-duration:.01ms!important}
   .piece{opacity:1!important;transform:none!important}
-  .hero-track{height:auto!important}
-  .hero-sticky{position:relative!important;opacity:1!important;transform:none!important}
 }
 </style>
 </head>
@@ -493,19 +499,28 @@ footer{
 <!-- ══════════ NAV ══════════ -->
 <nav class="nav" id="nav">
   <div class="wrap nav-in">
-    <a class="brand hx" href="#top">Mark <em>Eleria</em></a>
+    <a class="brand hx" href="#top" aria-label="Mark Angel Eleria">
+      <span class="brand-full">Mark <em>Eleria</em></span>
+      <span class="brand-short" aria-hidden="true">M</span>
+    </a>
 
-    <ul class="links">
-      <li><a class="hx" href="#about">About</a></li>
-      <li><a class="hx" href="#skills">Skills</a></li>
-      <li><a class="hx" href="#projects">Projects</a></li>
-      <li><a class="hx" href="#contact">Contact</a></li>
-    </ul>
+    <button class="menu-btn hx" id="menuBtn" type="button" aria-expanded="false" aria-controls="navDrawer" aria-label="Toggle menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
 
-    <div class="themes" role="group" aria-label="Colour theme">
-      <button class="tbtn hx" data-set="business" aria-pressed="true"  title="Business theme"><span class="swatch"></span><span class="sr">Business</span></button>
-      <button class="tbtn hx" data-set="summer"   aria-pressed="false" title="Summer theme"><span class="swatch"></span><span class="sr">Summer</span></button>
-      <button class="tbtn hx" data-set="night"    aria-pressed="false" title="Night theme"><span class="swatch"></span><span class="sr">Night</span></button>
+    <div class="nav-drawer" id="navDrawer">
+      <ul class="links">
+        <li><a class="hx" href="#about">About</a></li>
+        <li><a class="hx" href="#skills">Skills</a></li>
+        <li><a class="hx" href="#projects">Projects</a></li>
+        <li><a class="hx" href="#contact">Contact</a></li>
+      </ul>
+
+      <div class="themes" role="group" aria-label="Colour theme">
+        <button class="tbtn hx" data-set="business" aria-pressed="true"  title="Business theme"><span class="swatch"></span><span class="sr">Business</span></button>
+        <button class="tbtn hx" data-set="summer"   aria-pressed="false" title="Summer theme"><span class="swatch"></span><span class="sr">Summer</span></button>
+        <button class="tbtn hx" data-set="night"    aria-pressed="false" title="Night theme"><span class="swatch"></span><span class="sr">Night</span></button>
+      </div>
     </div>
   </div>
 </nav>
@@ -513,10 +528,9 @@ footer{
 <main id="top">
 
 <!-- ══════════ HERO ══════════ -->
-<section class="hero-track" id="hero">
-  <div class="hero-sticky" id="heroSticky">
+<section class="hero">
   <div class="wrap hero-grid">
-    <div class="hero-copy" id="heroCopy">
+    <div class="hero-copy">
       <p class="loc"><span class="pulse"></span> Cavite, Philippines &middot; UTC+8 &middot; Open to remote</p>
       <h1>Mark Angel Eleria</h1>
       <p class="role">Software Engineer &mdash; backend systems, production support, and the Linux underneath them.</p>
@@ -537,10 +551,9 @@ footer{
       </div>
     </div>
 
-    <div class="hero-photo" id="heroPhoto">
+    <div class="hero-photo">
       <div class="frame"><span class="frame-tag" id="frameTag">Business</span></div>
     </div>
-  </div>
   </div>
 </section>
 
@@ -568,28 +581,34 @@ footer{
     <div class="tl">
       <article class="panel tl-item piece" style="--dx:-38px;--rot:-1.1deg;--delay:60ms">
         <div class="tl-rail"></div>
-        <div>
-          <p class="tl-meta">May 2022 &mdash; Present &middot; Mandaluyong City</p>
-          <h3>Full Stack Developer</h3>
-          <p class="tl-org"><img class="tl-logo" src="img/mbe-about-accenture.jpg" alt="" aria-hidden="true"> Accenture Inc.</p>
-          <ul>
-            <li>Build and maintain backend services that keep transactions moving for logistics and telecom clients &mdash; when one breaks, someone's shipment or bill doesn't go through.</li>
-            <li>In Q1 2023 I was closing about one in five of the team's support tickets, mostly by getting quicker at finding the actual cause instead of patching symptoms.</li>
-            <li>Automated the fixes I kept doing by hand, which ended up saving the team around 60 hours a month.</li>
-          </ul>
+        <div class="tl-content">
+          <div class="tl-media" style="background-image:url('img/mbe-about-accenture.jpg')"></div>
+          <div>
+            <p class="tl-meta">May 2022 &mdash; Present &middot; Mandaluyong City</p>
+            <h3>Full Stack Developer</h3>
+            <p class="tl-org">Accenture Inc.</p>
+            <ul>
+              <li>Build and maintain backend services that keep transactions moving for logistics and telecom clients &mdash; when one breaks, someone's shipment or bill doesn't go through.</li>
+              <li>In Q1 2023 I was closing about one in five of the team's support tickets, mostly by getting quicker at finding the actual cause instead of patching symptoms.</li>
+              <li>Automated the fixes I kept doing by hand, which ended up saving the team around 60 hours a month.</li>
+            </ul>
+          </div>
         </div>
       </article>
 
       <article class="panel tl-item piece" style="--dx:38px;--rot:1.1deg;--delay:170ms">
         <div class="tl-rail"></div>
-        <div>
-          <p class="tl-meta">Feb 2019 &mdash; Apr 2022 &middot; Makati City</p>
-          <h3>Business Client Relations Associate</h3>
-          <p class="tl-org"><img class="tl-logo" src="img/mbe-about-cebuana.jpg" alt="" aria-hidden="true"> Pawncare Services Inc. &mdash; Cebuana Lhuillier</p>
-          <ul>
-            <li>Handled day-to-day financial transactions at a branch &mdash; remittance, pawning, bills payment, insurance &mdash; under strict compliance rules.</li>
-            <li>Built a spreadsheet tool that calculated interest and pawn values automatically &mdash; probably my first real taste of using software to remove a repetitive, error-prone task.</li>
-          </ul>
+        <div class="tl-content">
+          <div class="tl-media" style="background-image:url('img/mbe-about-cebuana.jpg')"></div>
+          <div>
+            <p class="tl-meta">Feb 2019 &mdash; Apr 2022 &middot; Makati City</p>
+            <h3>Business Client Relations Associate</h3>
+            <p class="tl-org">Pawncare Services Inc. &mdash; Cebuana Lhuillier</p>
+            <ul>
+              <li>Handled day-to-day financial transactions at a branch &mdash; remittance, pawning, bills payment, insurance &mdash; under strict compliance rules.</li>
+              <li>Built a spreadsheet tool that calculated interest and pawn values automatically &mdash; probably my first real taste of using software to remove a repetitive, error-prone task.</li>
+            </ul>
+          </div>
         </div>
       </article>
     </div>
@@ -779,60 +798,36 @@ footer{
 
   /* ---- nav shadow once scrolled ---- */
   var nav = document.getElementById("nav");
-
-  /* ---- hero: sticky pin + scroll-linked fade into About ------------
-     heroTrack reserves extra scroll height (see .hero-track in CSS,
-     currently 112vh). While the track is being scrolled through,
-     heroSticky stays pinned via CSS position:sticky, and here we
-     turn how far we've scrolled into that track into a 0-1 "progress"
-     value that drives its fade-out. Because it's read straight off
-     scroll position every frame (not a timed animation), it tracks
-     the scrollbar exactly and reverses cleanly if the user scrolls
-     back up. */
-  var heroTrack  = document.getElementById("hero");
-  var heroSticky = document.getElementById("heroSticky");
-  var copy  = document.getElementById("heroCopy");
-  var photo = document.getElementById("heroPhoto");
   var ticking = false;
-
-  // Keep this at 1: it makes the hero's opacity hit 0 at the exact
-  // same scroll position where the pin releases and About's top edge
-  // reaches the bottom of the viewport. Anything above 1 makes the
-  // hero disappear before the hand-off — which sounds snappier but
-  // actually opens a gap where neither section is visible. Anything
-  // below 1 leaves a visible sliver of hero after About starts
-  // sliding up. 1 is the value with no gap either way.
-  var FADE_RATE = 1;
 
   function onFrame(){
     var y = window.scrollY || window.pageYOffset;
     nav.classList.toggle("stuck", y > 8);
-
-    if (heroTrack && heroSticky){
-      if (reduced){
-        heroSticky.style.opacity = "1";
-        heroSticky.style.transform = "none";
-        if (copy)  copy.style.transform  = "none";
-        if (photo) photo.style.transform = "none";
-      } else {
-        var pinDistance = heroTrack.offsetHeight - window.innerHeight;
-        var progress = pinDistance > 0
-          ? Math.min(Math.max(-heroTrack.getBoundingClientRect().top, 0) / pinDistance, 1)
-          : 0;
-        var fade = Math.min(progress * FADE_RATE, 1);
-
-        heroSticky.style.opacity   = String(1 - fade);
-        heroSticky.style.transform = "scale(" + (1 - fade * 0.06).toFixed(3) + ")";
-        if (copy)  copy.style.transform  = "translate3d(0," + (fade * -26).toFixed(2) + "px,0)";
-        if (photo) photo.style.transform = "translate3d(0," + (fade * 18).toFixed(2) + "px,0) scale(" + (1 - fade * 0.04).toFixed(3) + ")";
-      }
-    }
     ticking = false;
   }
   window.addEventListener("scroll", function(){
     if (!ticking){ ticking = true; window.requestAnimationFrame(onFrame); }
   }, {passive:true});
   onFrame();
+
+  /* ---- mobile nav: hamburger opens a drawer with the links + theme
+     switcher. Only relevant below the 760px breakpoint in the CSS —
+     above it the drawer is always visible via flex, so this class
+     toggle has no visual effect. */
+  var menuBtn = document.getElementById("menuBtn");
+  var drawer  = document.getElementById("navDrawer");
+  if (menuBtn && drawer){
+    menuBtn.addEventListener("click", function(){
+      var open = drawer.classList.toggle("open");
+      menuBtn.setAttribute("aria-expanded", String(open));
+    });
+    Array.prototype.forEach.call(drawer.querySelectorAll("a"), function(a){
+      a.addEventListener("click", function(){
+        drawer.classList.remove("open");
+        menuBtn.setAttribute("aria-expanded", "false");
+      });
+    });
+  }
 
   /* ---- assembly: pieces settle into place as they enter view ---- */
   var pieces = document.querySelectorAll(".piece");
